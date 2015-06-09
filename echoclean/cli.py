@@ -97,7 +97,7 @@ def apply(rules, data, output):
         else:
             result_cols.append(c)
 
-    has_pass_filename = 'Path' in data_reader.fieldnames
+    has_pass_filename = 'Filename' in data_reader.fieldnames
 
     print 'Criteria columns: {}'.format(','.join(criteria_cols))
     print 'New columns added for results: {}'.format(','.join(result_cols))
@@ -146,7 +146,7 @@ def apply(rules, data, output):
         classified.update([bool(result)])
 
         if has_pass_filename:
-            filename = os.path.split(row['Path'])[1]
+            filename = os.path.split(row['Filename'])[1]
             night = _extract_sonobat_night(filename) or ''
             if night:
                 if night not in nights:
@@ -155,7 +155,9 @@ def apply(rules, data, output):
 
             output_row.append(night)
 
-        output_row.extend(row.values())
+        # row.values() does not preserve order when using csv
+        orig_values = [row[k] for k in data_reader.fieldnames]
+        output_row.extend(orig_values)
         output_ws.append(output_row)
 
         counter += 1
@@ -185,11 +187,12 @@ def apply(rules, data, output):
 
     # Create a summary sheet for all values in classified output
     for i, key in enumerate(result_cols):
-        output_ws = output_wb.create_sheet(i + 3, '{0} Summary'.format(key))
-        output_ws.append(['Value', 'Rows Classified'])
-        values = counts[key].keys()
-        values.sort()
-        for value in values:
-            output_ws.append([value, counts[key][value]])
+        if len(counts[key].keys()) > 1:
+            output_ws = output_wb.create_sheet(i + 3, '{0} Summary'.format(key))
+            output_ws.append(['Value', 'Rows Classified'])
+            values = counts[key].keys()
+            values.sort()
+            for value in values:
+                output_ws.append([value, counts[key][value]])
 
     output_wb.save(filename=output)
