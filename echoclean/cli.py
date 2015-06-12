@@ -50,39 +50,42 @@ def cli():
 def apply(rules, data, output):
     """Apply the rules to the input data."""
 
-    click.echo((rules, data, output))
+    try:
+        data_ext = os.path.splitext(data)[1]
+        if data_ext == '.xlsx':
+            data_reader = XLSX_DictReader.from_file(data, prompt=True)
+        elif data_ext in ('.txt', '.csv'):
+            data_file = open(data)
+            if data_ext == '.csv':
+                delim = ','
+            else:  # may be tab or comma delimited
+                delim = '\t' if '\t' in data_file.read(1000) else ','
+                data_file.seek(0)
+            data_reader = CSV_DictReader(data_file, delimiter=delim)
 
-    data_ext = os.path.splitext(data)[1]
-    if data_ext == '.xlsx':
-        data_reader = XLSX_DictReader.from_file(data)
-    elif data_ext in ('.txt', '.csv'):
-        data_file = open(data)
-        if data_ext == '.csv':
-            delim = ','
-        else:  # may be tab or comma delimited
-            delim = '\t' if '\t' in data_file.read(1000) else ','
-            data_file.seek(0)
-        data_reader = CSV_DictReader(data_file, delimiter=delim)
+        else:
+            raise click.BadParameter('data file must be an XLSX, TXT, or CSV file',
+                                     param='data', param_hint='data')
 
-    else:
-        raise click.BadParameter('data file must be an XLSX, TXT, or CSV file',
-                                 param='data', param_hint='data')
+        rules_ext = os.path.splitext(rules)[1]
+        if rules_ext == '.xlsx':
+            rule_reader = XLSX_DictReader.from_file(rules, prompt=True)
+        elif rules_ext in ('.txt', '.csv'):
+            rules_file = open(rules)
+            if rules_ext == '.csv':
+                delim = ','
+            else:  # may be tab or comma delimited
+                delim = '\t' if '\t' in rules_file.read(1000) else ','
+                rules_file.seek(0)
+            rule_reader = CSV_DictReader(rules_file, delimiter=delim)
 
-    rules_ext = os.path.splitext(rules)[1]
-    if rules_ext == '.xlsx':
-        rule_reader = XLSX_DictReader.from_file(rules)
-    elif rules_ext in ('.txt', '.csv'):
-        rules_file = open(rules)
-        if rules_ext == '.csv':
-            delim = ','
-        else:  # may be tab or comma delimited
-            delim = '\t' if '\t' in rules_file.read(1000) else ','
-            rules_file.seek(0)
-        rule_reader = CSV_DictReader(rules_file, delimiter=delim)
+        else:
+            raise click.BadParameter('rules file must be an XLSX, TXT, or CSV file',
+                                     param='rules', param_hint='rules')
 
-    else:
-        raise click.BadParameter('rules file must be an XLSX, TXT, or CSV file',
-                                 param='rules', param_hint='rules')
+    except ValueError as e:
+        print e.message
+        raise click.Abort()
 
 
     if not '.xlsx' in output:

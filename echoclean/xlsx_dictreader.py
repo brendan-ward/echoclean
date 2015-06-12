@@ -1,5 +1,6 @@
+import os
 from collections import OrderedDict
-from openpyxl import load_workbook, Workbook
+from openpyxl import load_workbook
 
 
 class DictReader(object):
@@ -32,11 +33,37 @@ class DictReader(object):
         return OrderedDict([(k, v) for k, v in zip(self.fieldnames, [r.value for r in row])])
 
     @classmethod
-    def from_file(cls, filename, index=None):
+    def from_file(cls, filename, index=None, prompt=False):
         """Read sheet from filename
         If index is not specified, the active sheet will be used.
+        If multiple sheets are present and prompt is true, the user will be
+        prompted to enter the index.
         """
 
         workbook = load_workbook(filename, data_only=True, guess_types=True)
-        worksheet = workbook.sheets[index] if index is not None else workbook.active
+        worksheet = workbook.active
+        if index is not None:
+            worksheet = workbook.worksheets[index]
+
+        elif prompt and len(workbook.worksheets) > 1:
+            print('\n-------------------------------------------------------------\nMultiple sheets found:')
+            valid_idx = []
+            for i, ws in enumerate(workbook.worksheets):
+                if ws.max_row:
+                    print('{0})  {1}{2}'.format(i, ws.title,
+                        ' (default)' if i == workbook._active_sheet_index else ''))
+                    valid_idx.append(i)
+            print('Choose sheet number and press ENTER or leave blank for default:')
+            index = raw_input('\n>  ')
+            print('')
+
+            if index != '':
+                index = int(index)
+                if not index in valid_idx:
+                    raise ValueError('Invalid Sheet Number')
+
+                worksheet = workbook.worksheets[index]
+
+        if len(workbook.worksheets) > 1:
+            print('{0}: using worksheet {1}'.format(os.path.split(filename)[1], worksheet.title))
         return cls(worksheet)
