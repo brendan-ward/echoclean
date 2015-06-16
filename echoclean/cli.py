@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 import time
 import datetime
@@ -13,6 +14,16 @@ from xlsx_dictreader import DictReader as XLSX_DictReader
 from ruleset import Ruleset
 
 logger = logging.getLogger('echoclean')
+
+
+def configure_logging(verbose):
+    if verbose == 2:
+        level = logging.DEBUG
+    elif verbose == 1:
+        level = logging.INFO
+    else:
+        level = logging.ERROR
+    logging.basicConfig(stream=sys.stderr, level=level)
 
 
 # For parsing sonobat .wav filename into a timestamp
@@ -47,8 +58,11 @@ def cli():
 @click.argument('rules', type=click.Path(exists=True))
 @click.argument('data', type=click.Path(exists=True))
 @click.argument('output', type=click.Path(dir_okay=False, writable=True, exists=False))
-def apply(rules, data, output):
+@click.option('-v', '--verbose', count=True, help='Verbose output')
+def apply(rules, data, output, verbose):
     """Apply the rules to the input data."""
+
+    configure_logging(verbose)
 
     try:
         data_ext = os.path.splitext(data)[1]
@@ -111,6 +125,7 @@ def apply(rules, data, output):
     ruleset = Ruleset(rules, result_cols)
     logger.debug('Parsed {} rules in {:.2f} seconds'.format(len(rules),
                                                             time.time() - start))
+    logger.debug('Ruleset:\n{0}\n'.format(ruleset))
 
     # Setup output worksheet
     start = time.time()
@@ -126,13 +141,14 @@ def apply(rules, data, output):
     empty_row = [''] * len(result_cols)
 
 
-    print 'Classifying passes'
+    print('\nClassifying passes')
     counter = 0
     counts = {k: dict() for k in result_cols}
     nights = {}
     classified = Counter()
 
-    for row in data_reader:
+    for i, row in enumerate(data_reader):
+        logger.info('classifying row #{0}'.format(i))
 
         # Classify row
         result = ruleset.test(row)
@@ -167,7 +183,7 @@ def apply(rules, data, output):
         # if counter > 2:  # FIXME
         #     break
 
-    print 'Evaluated {} passes in {:.2f} seconds'.format(counter, time.time() - start)
+
 
     # Report overall hits and misses
     output_ws = output_wb.create_sheet(1, 'Classification Summary')
@@ -199,3 +215,8 @@ def apply(rules, data, output):
                 output_ws.append([value, counts[key][value]])
 
     output_wb.save(filename=output)
+
+
+    print '\nEvaluated {} passes in {:.2f} seconds'.format(counter, time.time() - start)
+    for result in (True, False):
+        print('{1} {0}'.format('matched a rule' if result else 'did not match any rules', classified[result]))
