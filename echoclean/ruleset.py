@@ -87,11 +87,11 @@ class Criterion(object):
         if criterion is not None:
             criterion = str(criterion).strip().lower()
 
-        if criterion == 'blank':  # TODO: document this change
+        if criterion == 'blank':
             self.is_blank = True
             return
 
-        if criterion in ('any', None, ''):  # TODO: document this change
+        if criterion in ('any', None, ''):
             self.is_any = True
             return
 
