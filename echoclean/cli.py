@@ -57,7 +57,7 @@ def cli():
 @cli.command(short_help='Apply the rules to the input data.')
 @click.argument('rules', type=click.Path(exists=True))
 @click.argument('data', type=click.Path(exists=True))
-@click.argument('output', type=click.Path(dir_okay=False, writable=True, exists=False))
+@click.argument('output', type=click.Path(dir_okay=False, writable=True, exists=False), required=False)
 @click.option('-v', '--verbose', count=True, help='Verbose output')
 def apply(rules, data, output, verbose):
     """Apply the rules to the input data."""
@@ -101,8 +101,10 @@ def apply(rules, data, output, verbose):
         print e.message
         raise click.Abort()
 
+    if not output:
+        output = '{0}_out.xlsx'.format(os.path.splitext(data)[0])
 
-    if not '.xlsx' in output:
+    elif not '.xlsx' in output:
         output += '.xlsx'
 
     # Extract out columns into criteria or new
@@ -140,6 +142,9 @@ def apply(rules, data, output, verbose):
 
     empty_row = [''] * len(result_cols)
 
+    inspect_idx = result_cols.index('Inspect')
+    if inspect_idx >= 0:
+        empty_row[inspect_idx] = 'Yes'
 
     print('\nClassifying passes')
     counter = 0

@@ -36,13 +36,22 @@ def test_any():
         result_cols=('ret', )
     )
 
+    ruleset2 = Ruleset(
+        [OrderedDict({'foo': 'any including blank', 'ret': 'incl_blank'})],
+        result_cols=('ret', )
+    )
+
     # None and '' don't count as values
     empty_rows = [
         OrderedDict({'foo': None}),
         OrderedDict({'foo': ''}),
     ]
+
     for row in empty_rows:
         assert ruleset.test(row) == ['bar']
+
+    for row in empty_rows:
+        assert ruleset2.test(row) == ['incl_blank']
 
 
 def test_number():
@@ -74,9 +83,9 @@ def test_tokens():
             OrderedDict({'foo': 'one', 'ret': 'one'}),
             OrderedDict({'foo': 'foo, bar', 'ret': 'foo,bar'}),
             OrderedDict({'foo': 'this, or that', 'ret': 'this,that'}),
-            OrderedDict({'foo': 'not something', 'ret': 'not something'}),
-            OrderedDict({'foo': 'not blank', 'ret': 'not blank'}),
             OrderedDict({'foo': 'this, that, or blank', 'ret': 'this or that or blank'}),
+            OrderedDict({'foo': 'not something', 'ret': 'not something'}),
+            OrderedDict({'foo': 'not blank', 'ret': 'not blank'})
         ],
         result_cols=('ret', )
     )

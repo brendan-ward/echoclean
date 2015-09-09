@@ -91,7 +91,7 @@ class Criterion(object):
             self.is_blank = True
             return
 
-        if criterion in ('any', None, ''):
+        if criterion in ('any', None, '', 'any including blank'):
             self.is_any = True
             return
 
