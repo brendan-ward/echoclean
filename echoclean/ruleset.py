@@ -67,7 +67,6 @@ class Rule(object):
                     key, criterion, 'blank' if is_blank else value))
                 return None
 
-
         # If it didn't fail, it must have passed
         return list(self._result)  # return a copy
 
@@ -108,8 +107,10 @@ class Criterion(object):
             return
 
         # 'or' is unnecessary in list of tokens, it is implicit
-        criterion = criterion.replace(' or ', ',')
+        criterion = criterion.replace(' or ', ',').replace(',or', ',')  # TODO: refactor as a regex
         tokens = [c.strip().replace('or ', ',') for c in criterion.split(',')]
+        # need to filter a little further
+        tokens = [t for t in tokens if t]
         self.values = set()
         for token in tokens:
             if not token:
