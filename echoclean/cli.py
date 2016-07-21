@@ -10,8 +10,8 @@ from csv import DictReader as CSV_DictReader
 
 from openpyxl import Workbook
 
-from xlsx_dictreader import DictReader as XLSX_DictReader
-from ruleset import Ruleset
+from echoclean.xlsx_dictreader import DictReader as XLSX_DictReader
+from echoclean.ruleset import Ruleset
 
 logger = logging.getLogger('echoclean')
 
@@ -98,7 +98,7 @@ def apply(rules, data, output, verbose):
                                      param='rules', param_hint='rules')
 
     except ValueError as e:
-        print e.message
+        print(e.message)
         raise click.Abort()
 
     if not output:
@@ -118,8 +118,8 @@ def apply(rules, data, output, verbose):
 
     has_pass_filename = 'Filename' in data_reader.fieldnames
 
-    print 'Criteria columns: {}'.format(','.join(criteria_cols))
-    print 'New columns added for results: {}'.format(','.join(result_cols))
+    print('Criteria columns: {}'.format(','.join(criteria_cols)))
+    print('New columns added for results: {}'.format(','.join(result_cols)))
 
     # Parse rules
     start = time.time()
@@ -132,7 +132,7 @@ def apply(rules, data, output, verbose):
     # Setup output worksheet
     start = time.time()
     output_wb = Workbook(write_only=True)
-    output_ws = output_wb.create_sheet(0, 'Classify Results')
+    output_ws = output_wb.create_sheet(index=0, title='Classify Results')
 
     output_cols = list(result_cols)
     if has_pass_filename:
@@ -191,7 +191,7 @@ def apply(rules, data, output, verbose):
 
 
     # Report overall hits and misses
-    output_ws = output_wb.create_sheet(1, 'Classification Summary')
+    output_ws = output_wb.create_sheet(index=1, title='Classification Summary')
     output_ws.append(['Classified', 'Count'])
     for result in (True, False):
         output_ws.append(['Yes' if result else 'No', classified[result]])
@@ -199,7 +199,7 @@ def apply(rules, data, output, verbose):
 
     if has_pass_filename and len(nights):
         # Report hits and misses for each night
-        output_ws = output_wb.create_sheet(2, 'Night Classification Summary')
+        output_ws = output_wb.create_sheet(index=2, title='Night Classification Summary')
         output_ws.append(
             ['Night', 'Rows Classified', 'Rows Not Classified', 'Total Rows'])
         nights_keys = nights.keys()
@@ -212,16 +212,18 @@ def apply(rules, data, output, verbose):
     # Create a summary sheet for all values in classified output
     for i, key in enumerate(result_cols):
         if len(counts[key].keys()) > 1:
-            output_ws = output_wb.create_sheet(i + 3, '{0} Summary'.format(key))
+            output_ws = output_wb.create_sheet(index=i + 3, title='{0} Summary'.format(key))
             output_ws.append(['Value', 'Rows Classified'])
-            values = counts[key].keys()
+            values = [x for x in counts[key].keys() if x]
             values.sort()
+            if None in counts[key].keys():
+                values = [None] + values
             for value in values:
                 output_ws.append([value, counts[key][value]])
 
     output_wb.save(filename=output)
 
 
-    print '\nEvaluated {} passes in {:.2f} seconds'.format(counter, time.time() - start)
+    print('\nEvaluated {} passes in {:.2f} seconds'.format(counter, time.time() - start))
     for result in (True, False):
         print('{1} {0}'.format('matched a rule' if result else 'did not match any rules', classified[result]))

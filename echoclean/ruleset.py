@@ -1,6 +1,7 @@
 import re
 import copy
 import logging
+from six import string_types
 
 
 logger = logging.getLogger('echoclean')
@@ -21,8 +22,8 @@ class Ruleset(object):
     def test(self, row):
         # Standardize row values to match criteria
         test_row = copy.deepcopy(row)  # need to copy so we don't alter original row
-        for key, value in test_row.iteritems():
-            if isinstance(value, basestring):
+        for key, value in test_row.items():
+            if isinstance(value, string_types):
                 test_row[key] = value.lower().strip()
             if test_row[key] in EMPTY_VALUES:
                 test_row[key] = None
@@ -48,13 +49,13 @@ class Rule(object):
             self._result.append(rule.pop(col))
 
         # TODO: try / except block
-        self.criteria = {k: Criterion(v) for k, v in rule.iteritems()}
+        self.criteria = {k: Criterion(v) for k, v in rule.items()}
 
     def __repr__(self):
-        return '\n'.join(['{0}: {1}'.format(k, v) for k,v in self.criteria.iteritems()])
+        return '\n'.join(['{0}: {1}'.format(k, v) for k,v in self.criteria.items()])
 
     def test(self, row):
-        for key, criterion in self.criteria.iteritems():
+        for key, criterion in self.criteria.items():
             value = row[key]
             passed = criterion.test(row[key])
             is_blank = value in EMPTY_VALUES

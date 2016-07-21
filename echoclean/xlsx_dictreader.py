@@ -1,6 +1,8 @@
 import os
 from collections import OrderedDict
 from openpyxl import load_workbook
+from openpyxl.utils import range_boundaries
+from six.moves import input
 
 
 class DictReader(object):
@@ -9,7 +11,7 @@ class DictReader(object):
         column_idx = []
         row_iter = worksheet.iter_rows()
 
-        for cell in row_iter.next():
+        for cell in next(row_iter):
             if not cell.value:  # Any blank column is beyond range of data
                 break
             self.fieldnames.append(cell.value)
@@ -18,18 +20,20 @@ class DictReader(object):
         self.column_range = (column_idx[0], column_idx[-1])
 
         # Setup rows iter
-        self.data_range = '{0}2:{1}{2}'.format(
+        min_col, min_row, max_col, max_row = range_boundaries('{0}2:{1}{2}'.format(
             self.column_range[0],
             self.column_range[1],
-            worksheet.get_highest_row()
+            worksheet.max_row
+        ))
+        self._iter_rows = worksheet.iter_rows(
+            min_col=min_col, min_row=min_row, max_col=max_col, max_row=max_row
         )
-        self._iter_rows = worksheet.iter_rows(self.data_range)
 
     def __iter__(self):
         return self
 
-    def next(self):
-        row = self._iter_rows.next()
+    def __next__(self):
+        row = next(self._iter_rows)
         return OrderedDict([(k, v) for k, v in zip(self.fieldnames, [r.value for r in row])])
 
     @classmethod
@@ -54,7 +58,7 @@ class DictReader(object):
                         ' (default)' if i == workbook._active_sheet_index else ''))
                     valid_idx.append(i)
             print('Choose sheet number and press ENTER or leave blank for default:')
-            index = raw_input('\n>  ')
+            index = input('\n>  ')
             print('')
 
             if index != '':

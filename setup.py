@@ -31,7 +31,8 @@ setup(
     zip_safe=False,
     install_requires=[
       'click',
-      'openpyxl'
+      'openpyxl',
+      'six'
     ],
     extras_require={
       'test': ['pytest'],
