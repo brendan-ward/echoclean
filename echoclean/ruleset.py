@@ -46,7 +46,10 @@ class Rule(object):
     def __init__(self, rule, result_cols):
         self._result = []
         for col in result_cols:
-            self._result.append(rule.pop(col))
+            value = rule.pop(col)
+            if isinstance(value, string_types):
+                value = value.strip()
+            self._result.append(value)
 
         # TODO: try / except block
         self.criteria = {k: Criterion(v) for k, v in rule.items()}
