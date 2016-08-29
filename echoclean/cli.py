@@ -202,7 +202,7 @@ def apply(rules, data, output, verbose):
         output_ws = output_wb.create_sheet(index=2, title='Night Classification Summary')
         output_ws.append(
             ['Night', 'Rows Classified', 'Rows Not Classified', 'Total Rows'])
-        nights_keys = nights.keys()
+        nights_keys = list(nights.keys())
         nights_keys.sort()
         for night in nights_keys:
             output_ws.append(
@@ -215,7 +215,9 @@ def apply(rules, data, output, verbose):
             output_ws = output_wb.create_sheet(index=i + 3, title='{0} Summary'.format(key))
             output_ws.append(['Value', 'Rows Classified'])
             values = [x for x in counts[key].keys() if x]
-            values.sort()
+            if len(set(type(x) for x in values)) == 1:
+                # cannot sort if values is mixed types
+                values.sort()
             if None in counts[key].keys():
                 values = [None] + values
             for value in values:
