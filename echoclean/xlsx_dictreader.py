@@ -44,7 +44,7 @@ class DictReader(object):
         prompted to enter the index.
         """
 
-        workbook = load_workbook(filename, data_only=True)
+        workbook = load_workbook(filename, data_only=True, guess_types=True)
         worksheet = workbook.active
         if index is not None:
             worksheet = workbook.worksheets[index]
