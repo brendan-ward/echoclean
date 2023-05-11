@@ -1,6 +1,6 @@
 # Echoclean
 
-A utility to help apply expert rules to Sonobat or Kaleidescope auto-id output.
+A utility to help apply expert rules to Sonobat or Kaleidoscope auto-id output.
 However, the program is intended to be quite general, and can likely be applied
 to outputs from other automatic classifiers that produce spreadsheet-like
 outputs.
