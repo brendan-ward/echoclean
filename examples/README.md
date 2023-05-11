@@ -2,7 +2,7 @@
 
 ## Northwest California
 
-Download [NWCal_Rules.xlsx](./NWCal_Rules.xlsx).
+Download [NWCal_Rules.xlsx](https://github.com/brendan-ward/echoclean/raw/master/examples/NWCal_Rules.xlsx).
 
 This ruleset is devised for a site in northwest California to get you started
 and to demonstrate the format of rulesets. You will need to adjust it based on
