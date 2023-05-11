@@ -4,12 +4,19 @@ A utility to help apply expert rules to sonobat output. However, the program
 is intended to be quite general, and can likely be applied to outputs from other
 automatic classifiers that produce spreadsheet-like outputs.
 
-## Dependencies:
+Getting started:
+
+-   [install echoclean](#installation)
+-   [using echoclean](#using-echoclean)
+-   [learn how it works](#how-it-works)
+-   [develop rules](#rules)
+
+## Installation
+
+### Dependencies:
 
 -   openpyxl (version 2.5.14, not newer!)
 -   click
-
-## Installation
 
 ### MacOS / Linux installation instructions:
 
@@ -112,24 +119,7 @@ Download or clone this repository, then run:
 
 `python setup.py install`
 
-## Usage
-
-From the command line, within your activated Python environment:
-
-```
-Usage: echoclean apply [OPTIONS] RULES DATA OUTPUT
-
-  Apply the rules to the input data.
-
-Options:
-  -v, --verbose  Verbose output
-  --help         Show this message and exit.
-
-```
-
-Verbose option can be doubled `-v -v` to provide even more verbose output.
-
-### Applying echoclean to Sonobat output
+## Using echoclean
 
 Save your rules to a known location on your computer (e.g., `C:\Users\YourName\Desktop\Sonobat\Rules`)
 
