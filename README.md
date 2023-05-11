@@ -11,9 +11,102 @@ automatic classifiers that produce spreadsheet-like outputs.
 
 ## Installation
 
-`pip install echoclean`
+### MacOS / Linux installation instructions:
 
-## Development installation
+Install [Python](https://www.python.org/) on your computer.
+
+Make sure to check box to add Python to Path.
+
+Install echoclean:
+
+```bash
+pip install echoclean
+```
+
+Verify that `echoclean` installed correctly by typing the following in
+your terminal of choice (CMD prompt on Windows):
+
+```
+echoclean
+```
+
+This should show:
+
+```
+Usage: echoclean [OPTIONS] COMMAND [ARGS]...
+```
+
+and not an error.
+
+### Windows installation instructions:
+
+Install [Python](https://www.python.org/) on your computer.
+
+Make sure to:
+
+-   Check box to add Python to Path
+-   Use Customize Installation
+-   Be sure that box to install Pip is checked
+-   Advanced Options: be sure box to Add Python to Environment variables is checked
+-   Specify the directory to which you want Python installed so that you can find it if needed
+    (e.g., to `~\Programs\Python\Python310\`)
+
+Run the CMD prompt by typing "CMD" from Windows search.
+
+Verify that `Python` is installed correctly by typing the following in the CMD
+prompt:
+
+```
+python --version
+```
+
+This should show the Python version and not an error.
+
+Verify that `pip` installed correctly by typing the following in the CMD prompt:
+
+```
+pip --version
+```
+
+This should display the version number and not an error.
+
+Retrive the list of places where python and packages are installed by typing
+the following in the CMD prompt:
+
+```
+python -c "import site; print(site.getsitepackages())"
+```
+
+This will return a list of directories.
+
+Update the System PATH environment variable to include the following directories. Follow the instructions [here](https://www.wikihow.com/Change-the-
+PATH-Environment-Variable-on-Windows) to update environment variables.
+
+-   add each of the directories above, separated by a semicolon
+-   add the Scripts subdirectory of Python; if you installed Python to `~\Programs\Python\Python310` this will be `~\Programs\Python\Python310\Scripts`
+
+Now install echoclean by typing the following in the CMD prompt:
+
+```
+pip install echoclean
+```
+
+Verify that `echoclean` installed correctly by typing the following in the CMD
+prompt:
+
+```
+echoclean
+```
+
+This should show
+
+```
+Usage: echoclean [OPTIONS] COMMAND [ARGS]...
+```
+
+and not an error.
+
+### Development installation
 
 Download or clone this repository, then run:
 
@@ -35,6 +128,30 @@ Options:
 ```
 
 Verbose option can be doubled `-v -v` to provide even more verbose output.
+
+### Applying echoclean to Sonobat output
+
+Save your rules to a known location on your computer (e.g., `C:\Users\YourName\Desktop\Sonobat\Rules`)
+
+Open your command window and navigate to that directory. On windows, open your
+CMD prompt by typing "CMD" in the Windows search box, and then type "cd <directory>" to navigate to that directory (replace <directory> with the actual
+name of your directory above).
+
+Then type the following:
+
+```
+echoclean apply "<rules>.xlsx" "<dataset>.csv"
+```
+
+where `<rules>` and `<dataset>` are the names of your rule spreadsheet and
+Sonobat outputs respectively.
+
+You will be prompted to select the worksheet in your rules workbook that contains the rules you want to apply.
+
+This will create a new file called "<dataset>\_out.xlsx" in the same
+directory as your rules (basically, replaces `.csv` with `_out.xlsx`).
+
+TIP: Make sure that all the columns are correctly lined up in the Sonobat output
 
 ## How it works
 
@@ -142,3 +259,7 @@ case where a blank would match, but any value not in the list would fail.
 You can also use a negatory condition, but only one value is allowed:
 
 `Consensus: Not EPFU`
+
+## Contact us for help
+
+If you need assistance installing or running echoclean, please [contact us](mailto:bcward@astutespruce.com).

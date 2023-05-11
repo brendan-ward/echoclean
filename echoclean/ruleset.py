@@ -28,6 +28,8 @@ class Ruleset(object):
             if test_row[key] in EMPTY_VALUES:
                 test_row[key] = None
 
+        logger.debug(f'ROW: {test_row}')
+
         for i, rule in enumerate(self.rules):
             logger.debug('testing against rule #{0}'.format(i))
             result = rule.test(test_row)
