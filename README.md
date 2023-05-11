@@ -1,8 +1,9 @@
 # Echoclean
 
-A utility to help apply expert rules to sonobat output. However, the program
-is intended to be quite general, and can likely be applied to outputs from other
-automatic classifiers that produce spreadsheet-like outputs.
+A utility to help apply expert rules to Sonobat or Kaleidescope auto-id output.
+However, the program is intended to be quite general, and can likely be applied
+to outputs from other automatic classifiers that produce spreadsheet-like
+outputs.
 
 Getting started:
 
@@ -10,6 +11,7 @@ Getting started:
 -   [using echoclean](#using-echoclean)
 -   [learn how it works](#how-it-works)
 -   [develop rules](#rules)
+-   [see example rules](#example-rules)
 
 ## Installation
 
@@ -67,6 +69,14 @@ prompt:
 python --version
 ```
 
+If you get an error message about python not being installed, try the following:
+
+```
+py --version
+```
+
+Either `python` or `py` should
+
 This should show the Python version and not an error.
 
 Verify that `pip` installed correctly by typing the following in the CMD prompt:
@@ -82,6 +92,12 @@ the following in the CMD prompt:
 
 ```
 python -c "import site; print(site.getsitepackages())"
+```
+
+OR
+
+```
+py -c "import site; print(site.getsitepackages())"
 ```
 
 This will return a list of directories.
@@ -250,6 +266,15 @@ You can also use a negatory condition, but only one value is allowed:
 
 `Consensus: Not EPFU`
 
+## Example rules
+
+See [examples/README.md](./examples/README.md) for example rule files to start
+from.
+
 ## Contact us for help
 
-If you need assistance installing or running echoclean, please [contact us](mailto:bcward@astutespruce.com).
+If you need assistance installing or running echoclean, please contact
+[bcward@astutespruce.com](mailto:bcward@astutespruce.com).
+
+For help developing and applying rulesets, please contact
+[theodore.weller@usda.gov](mailto:theodore.weller@usda.gov).
